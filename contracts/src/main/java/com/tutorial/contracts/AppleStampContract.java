@@ -1,20 +1,23 @@
 package com.tutorial.contracts;
 
 import com.tutorial.states.AppleStamp;
+import com.tutorial.states.BasketOfApples;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.Contract;
 import net.corda.core.transactions.LedgerTransaction;
 import org.jetbrains.annotations.NotNull;
 
-import static net.corda.core.contracts.ContractsDSL.requireThat;
+import static net.corda.core.contracts.ContractsDSL.requireThat; //Domain Specific Language
+
 
 public class AppleStampContract implements Contract {
 
-    //ID para identificar el contrato durante una transaccion
+    // This is used to identify our contract when building a transaction.
     public static final String ID = "com.tutorial.contracts.AppleStampContract";
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
+
         //Extract the command from the transaction.
         final CommandData commandData = tx.getCommands().get(0).getValue();
 
@@ -27,7 +30,7 @@ public class AppleStampContract implements Contract {
                 return null;
             });
         }else if(commandData instanceof BasketOfApplesContract.Commands.Redeem){
-            //Transaction verification will happen in BasketOfApples Contract
+            //Transaction verification will happen in BasketOfApple Contract
         }
         else{
             //Unrecognized Command type
@@ -35,7 +38,9 @@ public class AppleStampContract implements Contract {
         }
     }
 
+    // Used to indicate the transaction's intent.
     public interface Commands extends CommandData {
-        class Issue implements AppleStampContract.Commands{};
+        //In our hello-world app, We will have two commands.
+        class Issue implements AppleStampContract.Commands {}
     }
 }
